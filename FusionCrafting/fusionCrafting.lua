@@ -54,11 +54,11 @@ end
 function rotate(r)
     delta = r - rt
     if delta == 0 then return
-    elseif Math.abs(delta) == 3 then
+    elseif math.abs(delta) == 3 then
         if delta > 0 then turtle.turnLeft()
         else turtle.turnRight() end
     else
-        for i=1, Math.abs(delta), 1 do
+        for i=1, math.abs(delta), 1 do
             if delta > 0 then turtle.turnRight()
             else turtle.turnLeft() end
         end
