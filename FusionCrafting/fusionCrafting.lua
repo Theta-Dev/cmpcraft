@@ -172,7 +172,7 @@ function checkRecipe()
         
         for itemstr in string.gmatch(line, "[^;]+") do
             item = string.gmatch(itemstr, "[^:]+")
-            print(item[0] .. " : " .. item[1] .. " : " .. item[2])
+            print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
 
     until (line == nil)
