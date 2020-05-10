@@ -15,12 +15,14 @@ function home()
         if block.name == BLOCK_HOME then return
         elseif block.name == BLOCK_FIELD then
             for i=0, 3, 1 do
-                turtle.turnRight()
-                turtle.forward()
+                if not turtle.forward() then
+                    turtle.turnRight()
+                end
                 _, block = turtle.inspectDown()
                 if block.name == BLOCK_HOME then return
                 elseif block.name ~= BLOCK_FIELD then
                     turtle.back()
+                    turtle.turnRight()
                 end
             end
             error("Could not detect field")
