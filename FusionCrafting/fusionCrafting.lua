@@ -167,17 +167,16 @@ end
 function checkRecipe()
     local file = fs.open("recipes.csv", "r")
 
-    repeat
+    while true do
         local line = file.readLine()
+        if line == nil then break end
         
         for itemstr in string.gmatch(line, "[^;]+") do
-            if type(itemstr) "string" then
-                item = string.gmatch(itemstr, "[^:]+")
-                print(item(0) .. " : " .. item(1) .. " : " .. item(2))
-            end
+            item = string.gmatch(itemstr, "[^:]+")
+            print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
 
-    until (line == nil)
+    end
 end
 
 function test()
