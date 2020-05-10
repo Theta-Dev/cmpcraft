@@ -11,7 +11,7 @@ function home()
     function moveHome()
         -- Move down
         while turtle.down() do end
-        _, block = turtle.inspectDown()
+        _, local block = turtle.inspectDown()
         if block.name == BLOCK_HOME then return
         elseif block.name == BLOCK_FIELD then
             for i=1, 5, 1 do
@@ -33,7 +33,7 @@ function home()
 
     function rotateHome()
         for i=1, 4, 1 do
-            _, block = turtle.inspect()
+            _, local block = turtle.inspect()
             if block.name == BLOCK_CHEST then return
             else
                 turtle.turnRight()
@@ -52,7 +52,7 @@ function home()
 end
 
 function rotate(r)
-    delta = r - rt
+    local delta = r - rt
     if delta == 0 then return
     elseif math.abs(delta) == 3 then
         if delta > 0 then turtle.turnLeft()
@@ -74,7 +74,7 @@ function move(x, y, z, r)
     if r == nil then r = rt end
 
     function moveX()
-        delta = x - posX
+        local delta = x - posX
 
         if delta == 0 then return end
 
@@ -82,7 +82,7 @@ function move(x, y, z, r)
 
         for i=1, math.abs(delta), 1 do
             if (rt==1 and delta>0) or (rt==3 and delta<0) then turtle.forward()
-            else turtle.back()
+            else turtle.back() end
         end
     end
 
@@ -98,3 +98,4 @@ function refuel()
 end
 
 home()
+move(2,,,)
