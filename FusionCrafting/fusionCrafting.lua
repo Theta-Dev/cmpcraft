@@ -171,7 +171,7 @@ function checkRecipe()
         local line = file.readLine()
         
         for itemstr in string.gmatch(line, "[^;]+") do
-            if itemstr ~= nil then
+            if itemstr(0) ~= nil then
                 item = string.gmatch(itemstr, "[^:]+")
                 print(item(0) .. " : " .. item(1) .. " : " .. item(2))
             end
