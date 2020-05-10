@@ -11,7 +11,7 @@ function home()
     function moveHome()
         -- Move down
         while turtle.down() do end
-        _, local block = turtle.inspectDown()
+        local _, block = turtle.inspectDown()
         if block.name == BLOCK_HOME then return
         elseif block.name == BLOCK_FIELD then
             for i=1, 5, 1 do
@@ -33,7 +33,7 @@ function home()
 
     function rotateHome()
         for i=1, 4, 1 do
-            _, local block = turtle.inspect()
+            local _, block = turtle.inspect()
             if block.name == BLOCK_CHEST then return
             else
                 turtle.turnRight()
@@ -73,24 +73,70 @@ function move(x, y, z, r)
     if z == nil then z = posZ end
     if r == nil then r = rt end
 
-    function moveX()
-        local delta = x - posX
+    function moveX(mx)
+        local delta = mx - posX
 
-        if delta == 0 then return end
+        if delta == 0 then return true end
 
         if rt~=1 and rt~=3 then rotate(1) end
 
         for i=1, math.abs(delta), 1 do
-            if (rt==1 and delta>0) or (rt==3 and delta<0) then turtle.forward()
-            else turtle.back() end
+            local res
+            if (rt==1 and delta>0) or (rt==3 and delta<0) then res = turtle.forward()
+            else res = turtle.back() end
+            if not res then return false end
         end
+        return true
     end
 
-    moveX()
+    function moveY(my)
+        local delta = my - posY
+
+        if delta == 0 then return true end
+
+        if rt~=0 and rt~=2 then rotate(0) end
+
+        for i=1, math.abs(delta), 1 do
+            local res
+            if (rt==0 and delta>0) or (rt==2 and delta<0) then res = turtle.forward()
+            else res = turtle.back() end
+            if not res then return false end
+        end
+        return true
+    end
+
+    function moveZ(mz)
+        local delta = mz - posZ
+
+        if delta == 0 then return true end
+
+        for i=1, math.abs(delta), 1 do
+            local res
+            if delta>0 then res = turtle.up()
+            else res = turtle.down() end
+            if not res then return false end
+        end
+        return true
+    end
+
+    local res = false
+    res = moveX(x)
+    res = res and moveY(y)
+    res = res and moveZ(z)
+
+    if not res then moveZ(2)
+    else return true end
+
+    res = moveX(x)
+    res = res and moveY(y)
+    res = res and moveZ(z)
+
+    if not res then return false end
 
     posX = x
     posY = y
     posZ = z
+    return true
 end
 
 function refuel()
@@ -98,4 +144,4 @@ function refuel()
 end
 
 home()
-move(2,,,)
+move(2,1,1,1)
