@@ -22,7 +22,7 @@ function home()
         local _, block = turtle.inspectDown()
         if block.name == BLOCK_HOME then return
         elseif block.name == BLOCK_FIELD then
-            for i=1, 5, 1 do
+            for i=1, 10, 1 do
                 if not turtle.forward() then
                     turtle.turnRight()
                 end
@@ -125,20 +125,27 @@ function move(p, r)
         return true
     end
 
-    local res = false
-    for i=1, 2, 1 do
-        res = moveX(p.x)
-        res = res and moveY(p.y)
-        res = res and moveZ(p.z)
+    function tryMove()
+        local res = false
+        for i=1, 2, 1 do
+            res = moveX(p.x)
+            res = res and moveY(p.y)
+            res = res and moveZ(p.z)
 
-        if not res then moveZ(2)
-        else break end
+            if not res then moveZ(2)
+            else break end
+        end
+
+        if not res then return false end
+
+        rotate(r)
+        return true
     end
 
-    if not res then error("Movement error") end
-
-    rotate(r)
-    return
+    while not tryMove() do
+        print("Movement failed")
+        sleep(5)
+    end
 end
 
 function refuel()
@@ -157,6 +164,16 @@ function refuel()
     end
 end
 
+function checkRecipe do
+    local file = fs.open("recipes.csv", "r")
+
+    repeat
+        local line = file.readLine()
+        print(line)
+
+    until (line == nil)
+end
+
 function test()
     for i=1, #POS_INJECTORS, 1 do
         move(POS_INJECTORS[i], RT_INJECTORS[i])
@@ -167,4 +184,4 @@ end
 
 home()
 refuel()
-test()
+checkRecipe()
