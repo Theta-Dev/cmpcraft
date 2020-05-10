@@ -63,6 +63,7 @@ function rotate(r)
             else turtle.turnLeft() end
         end
     end
+    rt = r
 end
 
 function move(x, y, z, r)
