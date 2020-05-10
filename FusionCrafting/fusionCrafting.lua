@@ -164,7 +164,7 @@ function refuel()
     end
 end
 
-function checkRecipe() do
+function checkRecipe()
     local file = fs.open("recipes.csv", "r")
 
     repeat
