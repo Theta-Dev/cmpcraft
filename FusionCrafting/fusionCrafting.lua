@@ -19,7 +19,7 @@ function home()
                 turtle.forward()
                 _, block = turtle.inspectDown()
                 if block.name == BLOCK_HOME then return
-                elseif block.name != BLOCK_FIELD then
+                elseif block.name ~= BLOCK_FIELD then
                     turtle.back()
                 end
             end
@@ -33,7 +33,8 @@ function home()
         for i=0, 3, 1 do
             _, block = turtle.inspect()
             if block.name == BLOCK_CHEST then return
-            turtle.turnRight()
+                turtle.turnRight()
+            end
         end
         error("Could not detect chest")
     end
