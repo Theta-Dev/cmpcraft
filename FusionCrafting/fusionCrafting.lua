@@ -142,11 +142,10 @@ function refuel()
 
     for i=1, 16, 1 do
         turtle.select(i)
-        if turtle.getItemCount() == 0 then jump add_fuel end
+        if turtle.getItemCount() == 0 then return end
     end
-    return
-
-    ::add_fuel::
+    if turtle.getItemCount() > 0 then return end
+    
     move(POS_FUEL, RT_FUEL)
     turtle.suck()
     if turtle.refuel() then
