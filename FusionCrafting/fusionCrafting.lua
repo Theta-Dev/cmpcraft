@@ -67,9 +67,30 @@ function rotate(r)
 end
 
 function move(x, y, z, r)
-    function moveX()
+    -- Handle nil parameters
+    if x == nil then x = posX end
+    if y == nil then y = posY end
+    if z == nil then z = posZ end
+    if r == nil then r = rt end
 
+    function moveX()
+        delta = x - posX
+
+        if delta == 0 then return end
+
+        if rt~=1 and rt~=3 then rotate(1) end
+
+        for i=1, math.abs(delta), 1 do
+            if (rt==1 and delta>0) or (rt==3 and delta<0) then turtle.forward()
+            else turtle.back()
+        end
     end
+
+    moveX()
+
+    posX = x
+    posY = y
+    posZ = z
 end
 
 function refuel()
