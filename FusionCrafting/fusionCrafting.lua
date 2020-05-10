@@ -4,9 +4,13 @@ BLOCK_CHEST = "minecraft:chest"
 
 POS_HOME = vector.new(0,0,0)
 POS_FUEL = vector.new(1,0,0)
+POS_INJECTORS = {vector.new(0,0,0), vector.new(0,0,1), vector.new(0,0,2), vector.new(0,1,2), vector.new(0,1,1), vector.new(0,1,0), vector.new(0,2,0), vector.new(0,2,1), vector.new(0,2,2)}
+POS_CORE = vector.new(0,1,1)
 
 RT_HOME = 2
 RT_FUEL = 2
+RT_INJECTORS = {3, 3, 3, 3, 3, 3, 3, 3, 3}
+RT_CORE = 1
 
 pos = vector.new(0,0,0)
 rt = 2
@@ -128,7 +132,7 @@ function move(p, r)
         res = res and moveZ(p.z)
 
         if not res then moveZ(2)
-        else return true end
+        else break end
     end
 
     if not res then error("Movement error") end
@@ -138,14 +142,14 @@ function move(p, r)
 end
 
 function refuel()
-    --if turtle.getFuelLevel() > 100 then return end
+    if turtle.getFuelLevel() > 100 then return end
 
     for i=1, 16, 1 do
         turtle.select(i)
-        if turtle.getItemCount() == 0 then return end
+        if turtle.getItemCount() == 0 then break end
     end
     if turtle.getItemCount() > 0 then return end
-    
+
     move(POS_FUEL, RT_FUEL)
     turtle.suck()
     if turtle.refuel() then
@@ -153,5 +157,14 @@ function refuel()
     end
 end
 
+function test()
+    for i=1, #POS_INJECTORS, 1 do
+        move(POS_INJECTORS[i], RT_INJECTORS[i])
+        sleep(1000)
+    end
+end
+
+
 home()
 refuel()
+test()
