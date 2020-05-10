@@ -35,6 +35,7 @@ function home()
         for i=0, 3, 1 do
             _, block = turtle.inspect()
             if block.name == BLOCK_CHEST then return
+            else
                 turtle.turnRight()
             end
         end
