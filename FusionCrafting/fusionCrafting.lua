@@ -66,7 +66,7 @@ function rotate(r)
     rt = r
 end
 
-function move(x, y, z, r)
+function move(x, y, z)
     -- Handle nil parameters
     if x == nil then x = posX end
     if y == nil then y = posY end
@@ -86,6 +86,7 @@ function move(x, y, z, r)
             else res = turtle.back() end
             if not res then return false end
         end
+        posX = mx
         return true
     end
 
@@ -102,6 +103,7 @@ function move(x, y, z, r)
             else res = turtle.back() end
             if not res then return false end
         end
+        posY = my
         return true
     end
 
@@ -116,6 +118,7 @@ function move(x, y, z, r)
             else res = turtle.down() end
             if not res then return false end
         end
+        posZ = mz
         return true
     end
 
@@ -132,10 +135,6 @@ function move(x, y, z, r)
     res = res and moveZ(z)
 
     if not res then return false end
-
-    posX = x
-    posY = y
-    posZ = z
     return true
 end
 
