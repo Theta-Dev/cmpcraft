@@ -164,12 +164,16 @@ function refuel()
     end
 end
 
-function checkRecipe do
+function checkRecipe() do
     local file = fs.open("recipes.csv", "r")
 
     repeat
         local line = file.readLine()
-        print(line)
+        
+        for itemstr in string.gmatch(line, "[^;]+") do
+            item = string.gmatch(itemstr, "[^:]+")
+            print(item[0] .. " : " .. item[1] .. " : " .. item[2])
+        end
 
     until (line == nil)
 end
