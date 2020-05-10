@@ -2,9 +2,13 @@ BLOCK_FIELD = "minecraft:quartz_block"
 BLOCK_HOME = "minecraft:lapis_block"
 BLOCK_CHEST = "minecraft:chest"
 
-posX = 0
-posY = 0
-posZ = 0
+POS_HOME = vector.new(0,0,0)
+POS_FUEL = vector.new(1,0,0)
+
+RT_HOME = 2
+RT_FUEL = 2
+
+pos = vector.new(0,0,0)
 rt = 2
 
 function home()
@@ -45,10 +49,10 @@ function home()
     moveHome()
     rotateHome()
 
-    posX = 0
-    posY = 0
-    posZ = 0
-    rt = 2
+    pos.x = POS_HOME.x
+    pos.y = POS_HOME.y
+    pos.z = POS_HOME.z
+    rt = RT_HOME
 end
 
 function rotate(r)
@@ -66,15 +70,10 @@ function rotate(r)
     rt = r
 end
 
-function move(x, y, z)
-    -- Handle nil parameters
-    if x == nil then x = posX end
-    if y == nil then y = posY end
-    if z == nil then z = posZ end
-    if r == nil then r = rt end
+function move(p, r)
 
     function moveX(mx)
-        local delta = mx - posX
+        local delta = mx - pos.x
 
         if delta == 0 then return true end
 
@@ -86,12 +85,12 @@ function move(x, y, z)
             else res = turtle.back() end
             if not res then return false end
         end
-        posX = mx
+        pos.x = mx
         return true
     end
 
     function moveY(my)
-        local delta = my - posY
+        local delta = my - pos.y
 
         if delta == 0 then return true end
 
@@ -103,12 +102,12 @@ function move(x, y, z)
             else res = turtle.back() end
             if not res then return false end
         end
-        posY = my
+        pos.y = my
         return true
     end
 
     function moveZ(mz)
-        local delta = mz - posZ
+        local delta = mz - pos.z
 
         if delta == 0 then return true end
 
@@ -118,29 +117,42 @@ function move(x, y, z)
             else res = turtle.down() end
             if not res then return false end
         end
-        posZ = mz
+        pos.z = mz
         return true
     end
 
     local res = false
-    res = moveX(x)
-    res = res and moveY(y)
-    res = res and moveZ(z)
+    for i=1, 2, 1 do
+        res = moveX(p.x)
+        res = res and moveY(p.y)
+        res = res and moveZ(p.z)
 
-    if not res then moveZ(2)
-    else return true end
+        if not res then moveZ(2)
+        else return true end
+    end
 
-    res = moveX(x)
-    res = res and moveY(y)
-    res = res and moveZ(z)
+    if not res then error("Movement error") end
 
-    if not res then return false end
-    return true
+    rotate(r)
+    return
 end
 
 function refuel()
+    --if turtle.getFuelLevel() > 100 then return end
 
+    for i=1, 16, 1 do
+        turtle.select(i)
+        if turtle.getItemCount() == 0 then jump add_fuel end
+    end
+    return
+
+    ::add_fuel::
+    move(POS_FUEL, RT_FUEL)
+    turtle.suck()
+    if turtle.refuel() then
+        print("Turtle refueled. Fuel level: " .. turtle.getFuelLevel())
+    end
 end
 
 home()
-move(2,1,1,1)
+refuel()
