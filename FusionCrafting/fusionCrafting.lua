@@ -260,9 +260,24 @@ function craftRecipe(recipe)
 
     if recipe.id == 0 or recipe.n == 0 then return 0 end
 
+    print("Crafting " .. recipe.n .. "x Recipe" .. recipe.id)
+
     -- Place core item
     move(POS_CORE, RT_CORE)
     pushItem(recipes[recipe.id][1], recipe.n)
+
+    -- Place infusion items
+    for i=2, table.getn(recipes[recipe.id]), 1 do
+        move(POS_INJECTORS[i-1], RT_INJECTORS[i-1])
+        pushItem(recipes[recipe.id][i], recipe.n)
+    end
+
+    move(POS_REDSTONE, nil)
+    while redstone.getInput("bottom") do
+        sleep(1)
+    end
+
+    move(POS_HOME, RT_HOME)
 end
 
 function test()
