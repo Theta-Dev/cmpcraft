@@ -176,8 +176,8 @@ function readFile()
         if line == nil then break end
         local recipe = {}
         
-        for itemstr in string.gmatch(line, "[^;]+") do
-            item = string.gmatch(itemstr, "[^:]+")
+        for itemstr in string.gmatch(line, "[^|]+") do
+            item = string.gmatch(itemstr, "[^;]+")
             table.insert(recipe, {item(0), item(1), item(2)})
             --print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end

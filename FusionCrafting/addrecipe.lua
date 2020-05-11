@@ -5,7 +5,7 @@ for i=1, 16, 1 do
 	turtle.select(i)
 	if turtle.getItemCount() > 0 then
 		item = turtle.getItemDetail()
-		line = item.count .. ":" .. item.name .. ":" .. item.damage .. ";"
+		line = item.count .. ";" .. item.name .. ";" .. item.damage .. "|"
 
 		print(line)
 		recipe = recipe .. line
