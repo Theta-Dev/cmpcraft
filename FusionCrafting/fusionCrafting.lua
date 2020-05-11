@@ -7,6 +7,7 @@ POS_FUEL = vector.new(1,0,0)
 POS_INJECTORS = {vector.new(0,0,0), vector.new(0,0,1), vector.new(0,0,2), vector.new(0,1,2), vector.new(0,1,1), vector.new(0,1,0), vector.new(0,2,0), vector.new(0,2,1), vector.new(0,2,2),
     vector.new(2,2,1), vector.new(2,2,0), vector.new(2,1,0), vector.new(2,0,0)}
 POS_CORE = vector.new(0,1,1)
+POS_REDSTONE = vector.new(1,0,0)
 
 RT_HOME = 2
 RT_FUEL = 2
@@ -142,7 +143,7 @@ function move(p, r)
 
         if not res then return false end
 
-        rotate(r)
+        if r ~= nil then rotate(r) end
         return true
     end
 
@@ -188,7 +189,6 @@ function readFile()
 end
 
 function readInventory()
-
     function addInv(item)
         for i=1, table.getn(inventory), 1 do
             if inventory[i].name == item.name and inventory[i].damage == item.damage then
@@ -204,17 +204,28 @@ function readInventory()
         if turtle.getItemCount() > 0 then
             local item = turtle.getItemDetail()
             addInv(item)
-            print(item.name .. " x " .. item.count)
         end
     end
 end
 
 function checkRecipe()
-    for i, recipe in ipairs(recipes) do
-        for j, item in ipairs(recipe) do
-            print(item[2])
+    for i=1, table.getn(recipes), 1 do
+        local n = 64
+        for j=1, table.getn(recipes[i]), 1 do
+            local item = recipes[i][j]
+
+            for k=1, table.getn(inventory), 1 do
+                if inventory[k].name == item.name and inventory[k].damage == item.damage then
+                    n = math.min(n, math.floor(inventory[k].count / item.count))
+                    break
+                end
+            end
+        end
+        if n > 0 then
+            return i
         end
     end
+    return 0
 end
 
 function test()
@@ -229,3 +240,4 @@ home()
 refuel()
 readFile()
 readInventory()
+print(checkRecipe())
