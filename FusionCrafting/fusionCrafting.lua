@@ -4,16 +4,19 @@ BLOCK_CHEST = "minecraft:chest"
 
 POS_HOME = vector.new(0,0,0)
 POS_FUEL = vector.new(1,0,0)
-POS_INJECTORS = {vector.new(0,0,0), vector.new(0,0,1), vector.new(0,0,2), vector.new(0,1,2), vector.new(0,1,1), vector.new(0,1,0), vector.new(0,2,0), vector.new(0,2,1), vector.new(0,2,2)}
+POS_INJECTORS = {vector.new(0,0,0), vector.new(0,0,1), vector.new(0,0,2), vector.new(0,1,2), vector.new(0,1,1), vector.new(0,1,0), vector.new(0,2,0), vector.new(0,2,1), vector.new(0,2,2),
+    vector.new(2,2,1), vector.new(2,2,0), vector.new(2,1,0), vector.new(2,0,0)}
 POS_CORE = vector.new(0,1,1)
 
 RT_HOME = 2
 RT_FUEL = 2
-RT_INJECTORS = {3, 3, 3, 3, 3, 3, 3, 3, 3}
+RT_INJECTORS = {3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1}
 RT_CORE = 1
 
 pos = vector.new(0,0,0)
 rt = 2
+
+recipes = {}
 
 function home()
     function moveHome()
@@ -164,7 +167,7 @@ function refuel()
     end
 end
 
-function checkRecipe()
+function readFile()
     local file = fs.open("recipes.csv", "r")
 
     while true do
@@ -173,20 +176,27 @@ function checkRecipe()
         
         for itemstr in string.gmatch(line, "[^;]+") do
             item = string.gmatch(itemstr, "[^:]+")
-            print(item(0) .. " : " .. item(1) .. " : " .. item(2))
+            table.insert(recipes, item)
+            --print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
-
     end
+    file.close()
+end
+
+function checkRecipe()
+    
 end
 
 function test()
     for i=1, #POS_INJECTORS, 1 do
         move(POS_INJECTORS[i], RT_INJECTORS[i])
-        sleep(1000)
+        sleep(1)
     end
 end
 
 
 home()
 refuel()
-checkRecipe()
+test()
+readFile()
+print(recipes)
