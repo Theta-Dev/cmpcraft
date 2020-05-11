@@ -230,7 +230,7 @@ function checkRecipe()
             end
         end
         if n > 0 and n < 10000 then
-            return {id=i, n=n}
+            return {id=i, n=math.min(n, 64)}
         end
     end
     return {id=0, n=0}
@@ -248,7 +248,10 @@ function craftRecipe(recipe)
                 local it = turtle.getItemDetail()
                 
                 if it.name == item.name and it.damage == item.damage then
-                    turtle.drop(count)
+                    while not turtle.drop(count) do
+                        print("Error: Could not drop items")
+                        sleep(5)
+                    end
                     count = count - it.count
                 end
             end
@@ -258,7 +261,7 @@ function craftRecipe(recipe)
         return false
     end
 
-    if recipe.id == 0 or recipe.n == 0 then return 0 end
+    if recipe.id == 0 or recipe.n == 0 then return false end
 
     print("Crafting " .. recipe.n .. "x Recipe" .. recipe.id)
 
@@ -277,11 +280,30 @@ function craftRecipe(recipe)
     end
 
     move(POS_REDSTONE, nil)
-    while redstone.getInput("bottom") do
-        sleep(1)
+    if redstone.getInput("bottom") then
+        while redstone.getInput("bottom") do sleep(1) end
+    else
+        print("Error: Fusion crafting did not start")
     end
 
     move(POS_HOME, RT_HOME)
+    return true
+end
+
+function pullItems()
+    select(1)
+
+    local tries = 0
+    local res = false
+
+    while tries < 3 do
+        if not turtle.suck() then
+            sleep(1)
+            tries = tries + 1
+        else res = true
+        end
+    end
+    return res
 end
 
 function test()
@@ -291,9 +313,17 @@ function test()
     end
 end
 
-
-home()
-refuel()
 readFile()
-readInventory()
-craftRecipe(checkRecipe())
+home()
+
+while true do
+    refuel()
+    print("Looking for items...")
+    while not pullItems() do end
+
+    print("Trying to craft...")
+    while true do
+        readInventory()
+        if not craftRecipe(checkRecipe()) then break end
+    end
+end
