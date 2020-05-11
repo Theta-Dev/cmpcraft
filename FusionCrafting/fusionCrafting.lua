@@ -206,11 +206,12 @@ function readInventory()
             addInv(item)
         end
     end
+    print(table.getn(inventory))
 end
 
 function checkRecipe()
     for i=1, table.getn(recipes), 1 do
-        local n = 64
+        local n = 10000
         for j=1, table.getn(recipes[i]), 1 do
             local item = recipes[i][j]
 
@@ -221,7 +222,7 @@ function checkRecipe()
                 end
             end
         end
-        if n > 0 then
+        if n > 0 and n < 10000 then
             return i
         end
     end
