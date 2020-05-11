@@ -169,16 +169,19 @@ end
 
 function readFile()
     local file = fs.open("recipes.csv", "r")
+    recipes = {}
 
     while true do
         local line = file.readLine()
         if line == nil then break end
+        local recipe = {}
         
         for itemstr in string.gmatch(line, "[^;]+") do
             item = string.gmatch(itemstr, "[^:]+")
-            table.insert(recipes, item)
+            table.insert(recipe, item)
             --print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
+        table.insert(recipes, recipe)
     end
     file.close()
 end
@@ -197,6 +200,11 @@ end
 
 home()
 refuel()
-test()
+--test()
 readFile()
-print(recipes)
+
+for recipe in recipes do
+    for item in recipe do
+        print(item(0) .. " : " .. item(1) .. " : " .. item(2))
+    end
+end
