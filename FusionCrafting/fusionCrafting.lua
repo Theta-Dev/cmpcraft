@@ -180,7 +180,7 @@ function readFile()
         
         for itemstr in string.gmatch(line, "[^|]+") do
             local item = string.gmatch(itemstr, "[^;]+")
-            table.insert(recipe, {count=item(0), name=item(1), damage=item(2)})
+            table.insert(recipe, {count=tonumber(item(0)), name=item(1), damage=tonumber(item(2))})
             --print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
         table.insert(recipes, recipe)
@@ -223,10 +223,10 @@ function checkRecipe()
             end
         end
         if n > 0 and n < 10000 then
-            return i
+            return {id=i, n=n}
         end
     end
-    return 0
+    return {id=0, n=0}
 end
 
 function test()
