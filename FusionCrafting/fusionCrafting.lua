@@ -199,6 +199,8 @@ function readInventory()
         table.insert(inventory, item)
     end
 
+    inventory = {}
+
     for i=1, 16, 1 do
         turtle.select(i)
         if turtle.getItemCount() > 0 then
@@ -206,7 +208,6 @@ function readInventory()
             addInv(item)
         end
     end
-    print(table.getn(inventory))
 end
 
 function checkRecipe()
@@ -281,6 +282,7 @@ function craftRecipe(recipe)
 
     move(POS_REDSTONE, nil)
     if redstone.getInput("bottom") then
+        print("Fusion crafting started")
         while redstone.getInput("bottom") do sleep(1) end
     else
         print("Error: Fusion crafting did not start")
