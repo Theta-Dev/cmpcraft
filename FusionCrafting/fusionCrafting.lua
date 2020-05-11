@@ -187,7 +187,11 @@ function readFile()
 end
 
 function checkRecipe()
-    
+    for i, recipe in ipairs(recipes) do
+        for j, item in ipairs(recipe) do
+            print(item(1))
+        end
+    end
 end
 
 function test()
@@ -200,11 +204,5 @@ end
 
 home()
 refuel()
---test()
 readFile()
-
-for recipe in recipes do
-    for item in recipe do
-        print(item(0) .. " : " .. item(1) .. " : " .. item(2))
-    end
-end
+checkRecipe()
