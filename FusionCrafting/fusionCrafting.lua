@@ -293,7 +293,7 @@ function craftRecipe(recipe)
 end
 
 function pullItems()
-    select(1)
+    turtle.select(1)
 
     local tries = 0
     local res = false
