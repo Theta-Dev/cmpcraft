@@ -214,12 +214,19 @@ function checkRecipe()
         local n = 10000
         for j=1, table.getn(recipes[i]), 1 do
             local item = recipes[i][j]
+            local found = false
 
             for k=1, table.getn(inventory), 1 do
                 if inventory[k].name == item.name and inventory[k].damage == item.damage then
                     n = math.min(n, math.floor(inventory[k].count / item.count))
+                    found = true
                     break
                 end
+            end
+
+            if not found then
+                n = 0
+                break
             end
         end
         if n > 0 and n < 10000 then
