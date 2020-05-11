@@ -267,9 +267,13 @@ function craftRecipe(recipe)
     pushItem(recipes[recipe.id][1], recipes[recipe.id][1].count * recipe.n)
 
     -- Place infusion items
+    local injector = 1
     for i=2, table.getn(recipes[recipe.id]), 1 do
-        move(POS_INJECTORS[i-1], RT_INJECTORS[i-1])
-        pushItem(recipes[recipe.id][i], recipe.n)
+        for j=1, recipes[recipe.id][i].count, 1 do
+            move(POS_INJECTORS[injector], RT_INJECTORS[injector])
+            pushItem(recipes[recipe.id][i], recipe.n)
+            injector = injector + 1
+        end
     end
 
     move(POS_REDSTONE, nil)
