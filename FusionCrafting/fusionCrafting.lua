@@ -236,6 +236,35 @@ function checkRecipe()
     return {id=0, n=0}
 end
 
+function craftRecipe(recipe)
+    function pushItem(item)
+        if not peripheral.isPresent("front") then return false end
+
+        local count = item.count
+
+        for i=1, 16, 1 do
+            turtle.select(i)
+            if turtle.getItemCount() > 0 then
+                local it = turtle.getItemDetail()
+                
+                if it.name == item.name and it.damage == item.damage then
+                    turtle.drop(count)
+                    count = count - it.count
+                end
+            end
+
+            if count <= 0 then return true end
+        end
+        return false
+    end
+
+    if recipe.id == 0 or recipe.n == 0 then return 0 end
+
+    -- Place core item
+    move(POS_CORE, RT_CORE)
+    pushItem(recipes[recipe.id][1])
+end
+
 function test()
     for i=1, #POS_INJECTORS, 1 do
         move(POS_INJECTORS[i], RT_INJECTORS[i])
@@ -248,4 +277,4 @@ home()
 refuel()
 readFile()
 readInventory()
-print(checkRecipe())
+craftRecipe(checkRecipe())
