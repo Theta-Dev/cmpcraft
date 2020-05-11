@@ -240,7 +240,7 @@ function craftRecipe(recipe)
     function pushItem(item, n)
         if not peripheral.isPresent("front") then return false end
 
-        local count = item.count * n
+        local count = n
 
         for i=1, 16, 1 do
             turtle.select(i)
@@ -264,7 +264,7 @@ function craftRecipe(recipe)
 
     -- Place core item
     move(POS_CORE, RT_CORE)
-    pushItem(recipes[recipe.id][1], recipe.n)
+    pushItem(recipes[recipe.id][1], recipes[recipe.id][1].count * recipe.n)
 
     -- Place infusion items
     for i=2, table.getn(recipes[recipe.id]), 1 do
