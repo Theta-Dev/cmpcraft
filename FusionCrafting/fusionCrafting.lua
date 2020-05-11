@@ -17,6 +17,7 @@ pos = vector.new(0,0,0)
 rt = 2
 
 recipes = {}
+inventory = {}
 
 function home()
     function moveHome()
@@ -168,7 +169,7 @@ function refuel()
 end
 
 function readFile()
-    local file = fs.open("recipes.csv", "r")
+    local file = fs.open("recipes.txt", "r")
     recipes = {}
 
     while true do
@@ -177,13 +178,35 @@ function readFile()
         local recipe = {}
         
         for itemstr in string.gmatch(line, "[^|]+") do
-            item = string.gmatch(itemstr, "[^;]+")
-            table.insert(recipe, {item(0), item(1), item(2)})
+            local item = string.gmatch(itemstr, "[^;]+")
+            table.insert(recipe, {count=item(0), name=item(1), damage=item(2)})
             --print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
         table.insert(recipes, recipe)
     end
     file.close()
+end
+
+function readInventory()
+
+    function addInv(item)
+        for i=1, table.getn(inventory), 1 do
+            if inventory[i].name == item.name and inventory[i].damage == item.damage then
+                inventory[i].count = inventory[i].count + item.count
+                return
+            end
+        end
+        table.insert(inventory, item)
+    end
+
+    for i=1, 16, 1 do
+        turtle.select(i)
+        if turtle.getItemCount() > 0 then
+            local item = turtle.getItemDetail()
+            addInv(item)
+            print(item.name .. " x " .. item.count)
+        end
+    end
 end
 
 function checkRecipe()
@@ -205,4 +228,4 @@ end
 home()
 refuel()
 readFile()
-checkRecipe()
+readInventory()

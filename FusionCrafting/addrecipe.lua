@@ -4,8 +4,8 @@ count = 0
 for i=1, 16, 1 do
 	turtle.select(i)
 	if turtle.getItemCount() > 0 then
-		item = turtle.getItemDetail()
-		line = item.count .. ";" .. item.name .. ";" .. item.damage .. "|"
+		local item = turtle.getItemDetail()
+		local line = item.count .. ";" .. item.name .. ";" .. item.damage .. "|"
 
 		print(line)
 		recipe = recipe .. line
@@ -14,7 +14,7 @@ for i=1, 16, 1 do
 end
 
 if count > 1 then
-	file = fs.open("recipes.csv", "a")
+	file = fs.open("recipes.txt", "a")
 	file.writeLine(recipe)
 	file.close()
 	print("Recipe added")
