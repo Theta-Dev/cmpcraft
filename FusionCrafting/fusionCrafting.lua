@@ -178,7 +178,7 @@ function readFile()
         
         for itemstr in string.gmatch(line, "[^;]+") do
             item = string.gmatch(itemstr, "[^:]+")
-            table.insert(recipe, item)
+            table.insert(recipe, {item(0), item(1), item(2)})
             --print(item(0) .. " : " .. item(1) .. " : " .. item(2))
         end
         table.insert(recipes, recipe)
@@ -189,7 +189,7 @@ end
 function checkRecipe()
     for i, recipe in ipairs(recipes) do
         for j, item in ipairs(recipe) do
-            print(item(1))
+            print(item[2])
         end
     end
 end
