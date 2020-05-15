@@ -235,10 +235,16 @@ end
 function craftRecipe(rcp)
     local recipe = recipes[rcp.id]
 
-    function pushItem()
+    function tryPushItem()
         if not peripheral.isPresent("bottom") then return false end
 
         return turtle.dropDown(1)
+    end
+
+    function pushItem()
+        while not tryPushItem do
+            sleep(2)
+        end
     end
 
     function discardItem()
@@ -307,6 +313,7 @@ function craftRecipe(rcp)
             if turtle.getItemCount == 0 then break end
             move(POS_INJECTORS[injector])
             pushItem()
+            injector = injector + 1
         end
     end
 
