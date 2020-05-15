@@ -243,7 +243,7 @@ function craftRecipe(recipe)
                 local it = turtle.getItemDetail()
                 
                 if it.name == item.name and it.damage == item.damage then
-                    while not turtle.drop(count) do
+                    while not turtle.dropDown(count) do
                         print("Error: Could not drop items")
                         sleep(5)
                     end
