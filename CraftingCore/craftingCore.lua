@@ -1,17 +1,16 @@
-BLOCK_CHEST = "minecraft:chest"
+BLOCK_LAPIS = "minecraft:lapis_block"
 BLOCK_HOME = "minecraft:chest"
 
 POS_HOME = vector.new(0,0,0)
 POS_FUEL = vector.new(1,0,0)
-POS_INJECTORS = {vector.new(0,1,0),vector.new(0,2,0),vector.new(0,3,0),vector.new(0,4,0),vector.new(0,5,0),
-    vector.new(1,5,0),vector.new(1,4,0),vector.new(1,3,0),vector.new(1,2,0),vector.new(1,1,0),
-    vector.new(2,1,0),vector.new(2,2,0),vector.new(2,3,0),vector.new(2,4,0),vector.new(2,5,0),
-    vector.new(3,5,0),vector.new(3,4,0),vector.new(3,3,0),vector.new(3,2,0),vector.new(3,1,0),
-    vector.new(4,1,0),vector.new(4,2,0),vector.new(4,3,0),vector.new(4,4,0),vector.new(4,5,0)}
+POS_INJECTORS = {vector.new(0,1,0),vector.new(0,2,0),vector.new(0,3,0),vector.new(0,4,0),
+    vector.new(1,4,0),vector.new(1,3,0),vector.new(1,2,0),vector.new(1,1,0),
+    vector.new(2,1,0),vector.new(2,2,0),vector.new(2,3,0),vector.new(2,4,0),
+    vector.new(3,4,0),vector.new(3,3,0),vector.new(3,2,0),vector.new(3,1,0)}
 POS_CORE = vector.new(1,0,0)
 POS_REDSTONE = vector.new(1,0,0)
 
-RT_HOME = 2
+RT_HOME = 3
 RT_FUEL = 2
 
 pos = vector.new(0,0,0)
@@ -41,12 +40,12 @@ function home()
     function rotateHome()
         for i=1, 4, 1 do
             local _, block = turtle.inspect()
-            if block.name == BLOCK_CHEST then return
+            if block.name == BLOCK_LAPIS then return
             else
                 turtle.turnRight()
             end
         end
-        error("Could not detect chest")
+        error("Could not detect lapis block")
     end
 
     moveHome()
@@ -195,12 +194,12 @@ function readInventory()
 
     inventory = {}
 
-    move(POS_HOME, RT_HOME)
-    local chest = peripheral.wrap("front")
-    local items = chest.list()
-
-    for i=1, table.getn(items), 1 do
-        addInv(items[i])
+    for i=1, 16, 1 do
+        turtle.select(i)
+        if turtle.getItemCount() > 0 then
+            local item = turtle.getItemDetail()
+            addInv(item)
+        end
     end
 end
 
@@ -231,103 +230,80 @@ function checkRecipe()
     return {id=0, n=0}
 end
 
-function craftRecipe(rcp)
-    local recipe = recipes[rcp.id]
+function craftRecipe(recipe)
 
-    function tryPushItem()
-        if not peripheral.isPresent("bottom") then return false end
+    function pushItem(item)
+        if not peripheral.isPresent("front") then return false end
 
-        return turtle.dropDown(1)
-    end
+        local count = 1
 
-    function pushItem()
-        while not tryPushItem() do
-            sleep(2)
+        for i=1, 16, 1 do
+            turtle.select(i)
+            if turtle.getItemCount() > 0 then
+                local it = turtle.getItemDetail()
+                
+                if it.name == item.name and it.damage == item.damage then
+                    while not turtle.drop(count) do
+                        print("Error: Could not drop items")
+                        sleep(5)
+                    end
+                    count = count - it.count
+                end
+            end
+
+            if count <= 0 then return true end
         end
-    end
-
-    function discardItem()
-        move(POS_HOME, RT_HOME)
-        if not peripheral.isPresent("bottom") then return false end
-
-        return turtle.dropDown()
-    end
-
-    function pullItem()
-        turtle.suck()
-        while turtle.getItemCount() == 0 do
-            sleep(2)
-            turtle.suck()
-        end
+        return false
     end
 
     print("Crafting Recipe" .. rcp.id)
-    turtle.select(1)
 
     -- Place core item
-    move(POS_HOME)
-    redstone.setOutput("right", true)
-    while true do
-        pullItem()
-        local item = turtle.getItemDetail()
+    move(POS_CORE)
+    pushItem(recipes[recipe.id][1])
 
-        if item.name == recipe[1].name and item.damage == recipe[1].damage then
-            redstone.setOutput("right", false)
-            move(POS_CORE)
-            pushItem()
-            break
-        else
-            discardItem()
-        end
-    end
-    table.remove(recipe, 1)
-
-    -- Place crafting items
+    -- Place infusion items
     local injector = 1
-
-    while table.getn(recipe) > 0 do
-        move(POS_HOME, RT_HOME)
-
-        for i=1, 16, 1 do
-            turtle.select(i)
-            turtle.drop()
-        end
-
-        for i=1, 16, 1 do
-            if table.getn(recipe) == 0 then break end
-            turtle.select(i)
-
-            local itemOK = false
-            redstone.setOutput("right", true)
-            while not itemOK do
-                pullItem()
-                local item = turtle.getItemDetail()
-
-                for j=1, table.getn(recipe), 1 do
-                    if item.name == recipe[j].name and item.damage == recipe[j].damage then
-                        table.remove(recipe, j)
-                        itemOK = true
-                        break
-                    end
-                end
-                if not itemOK then discardItem() end
-            end
-            redstone.setOutput("right", false)
-        end
-
-        for i=1, 16, 1 do
-            turtle.select(i)
-            if turtle.getItemCount == 0 then break end
-            move(POS_INJECTORS[injector])
-            pushItem()
+    for i=2, table.getn(recipes[recipe.id]), 1 do
+        for j=1, recipes[recipe.id][i].count, 1 do
+            move(POS_INJECTORS[injector], RT_INJECTORS[injector])
+            pushItem(recipes[recipe.id][i])
             injector = injector + 1
         end
     end
 
+    -- Pull out crafted item
+    move(POS_CORE)
+    local core = peripheral.wrap("bottom")
+    local cap = core.getEnergyCapacity()
+    while core.getEnergyStored() ~= cap do
+        sleep(1)
+    end
+    turtle.suckDown()
+end
+
+function pullItems()
+    move(POS_HOME, RT_HOME)
+    turtle.select(1)
+
+    local tries = 0
+    local res = false
+
+    while tries < 3 do
+        if not turtle.suckDown() then
+            sleep(1)
+            tries = tries + 1
+        else res = true
+        end
+    end
+    return res
 end
 
 readFile()
 home()
+
+print("Looking for items...")
+while not pullItems() do end
 
 readInventory()
 craftRecipe(checkRecipe())

@@ -1,12 +1,11 @@
 recipe = ""
 count = 0
 
-chest = peripheral.wrap("front")
-items = chest.list()
-
-for i=1, table.getn(items), 1 do
-	if items[i] ~= nil then
-		local line = items[i].count .. ";" .. items[i].name .. ";" .. items[i].damage .. "|"
+for i=1, 16, 1 do
+	turtle.select(i)
+	if turtle.getItemCount() > 0 then
+		local item = turtle.getItemDetail()
+		local line = item.count .. ";" .. item.name .. ";" .. item.damage .. "|"
 
 		print(line)
 		recipe = recipe .. line
