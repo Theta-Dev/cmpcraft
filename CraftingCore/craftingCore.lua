@@ -300,6 +300,7 @@ function craftRecipe(rcp)
 
                 for j=1, table.getn(recipe), 1 do
                     if item.name == recipe[j].name and item.damage == recipe[j].damage then
+                        table.remove(j)
                         itemOK = true
                         break
                     end
