@@ -254,10 +254,10 @@ function craftRecipe(rcp)
     end
 
     function pullItem()
-        turtle.suck(1)
+        turtle.suck()
         while turtle.getItemCount() == 0 do
             sleep(2)
-            turtle.suck(1)
+            turtle.suck()
         end
     end
 
@@ -289,6 +289,11 @@ function craftRecipe(rcp)
         move(POS_HOME, RT_HOME)
 
         for i=1, 16, 1 do
+            turtle.select(i)
+            turtle.drop()
+        end
+
+        for i=1, 16, 1 do
             if table.getn(recipe) == 0 then break end
             turtle.select(i)
 
@@ -300,7 +305,7 @@ function craftRecipe(rcp)
 
                 for j=1, table.getn(recipe), 1 do
                     if item.name == recipe[j].name and item.damage == recipe[j].damage then
-                        table.remove(j)
+                        table.remove(recipe, j)
                         itemOK = true
                         break
                     end
