@@ -254,6 +254,7 @@ function craftRecipe(recipe)
         return false
     end
 
+    if recipe.id == 0 or recipe.n == 0 then return false end
     print("Crafting Recipe" .. recipe.id)
 
     -- Place core item
