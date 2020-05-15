@@ -1,16 +1,14 @@
-BLOCK_LAPIS = "minecraft:lapis_block"
 BLOCK_HOME = "minecraft:chest"
 
 POS_HOME = vector.new(0,0,0)
 POS_FUEL = vector.new(1,0,0)
 POS_INJECTORS = {vector.new(0,1,0),vector.new(0,2,0),vector.new(0,3,0),vector.new(0,4,0),
-    vector.new(1,4,0),vector.new(1,3,0),vector.new(1,2,0),vector.new(1,1,0),
+    vector.new(1,4,0),vector.new(1,3,0),vector.new(1,1,0),
     vector.new(2,1,0),vector.new(2,2,0),vector.new(2,3,0),vector.new(2,4,0),
     vector.new(3,4,0),vector.new(3,3,0),vector.new(3,2,0),vector.new(3,1,0)}
-POS_CORE = vector.new(1,0,0)
-POS_REDSTONE = vector.new(1,0,0)
+POS_CORE = vector.new(1,2,0)
 
-RT_HOME = 3
+RT_HOME = 2
 RT_FUEL = 2
 
 pos = vector.new(0,0,0)
@@ -40,12 +38,12 @@ function home()
     function rotateHome()
         for i=1, 4, 1 do
             local _, block = turtle.inspect()
-            if block.name == BLOCK_LAPIS then return
+            if block.name == BLOCK_CHEST then return
             else
                 turtle.turnRight()
             end
         end
-        error("Could not detect lapis block")
+        error("Could not detect chest")
     end
 
     moveHome()
@@ -233,7 +231,7 @@ end
 function craftRecipe(recipe)
 
     function pushItem(item)
-        if not peripheral.isPresent("front") then return false end
+        if not peripheral.isPresent("bottom") then return false end
 
         local count = 1
 
@@ -276,10 +274,13 @@ function craftRecipe(recipe)
     move(POS_CORE)
     local core = peripheral.wrap("bottom")
     local cap = core.getEnergyCapacity()
-    while core.getEnergyStored() ~= cap do
+    while core.getEnergyStored() ~= cap or core.list()[1] == recipes[recipe.id][1] do
         sleep(1)
     end
+    turtle.select(1)
     turtle.suckDown()
+    move(POS_HOME, RT_HOME)
+    turtle.dropDown()
 end
 
 function pullItems()
@@ -290,7 +291,7 @@ function pullItems()
     local res = false
 
     while tries < 3 do
-        if not turtle.suckDown() then
+        if not turtle.suck() then
             sleep(1)
             tries = tries + 1
         else res = true
