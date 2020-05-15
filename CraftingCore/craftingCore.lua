@@ -256,7 +256,7 @@ function craftRecipe(recipe)
         return false
     end
 
-    print("Crafting Recipe" .. rcp.id)
+    print("Crafting Recipe" .. recipe.id)
 
     -- Place core item
     move(POS_CORE)
@@ -302,8 +302,14 @@ end
 readFile()
 home()
 
-print("Looking for items...")
-while not pullItems() do end
+while true do
+    refuel()
+    print("Looking for items...")
+    while not pullItems() do end
 
-readInventory()
-craftRecipe(checkRecipe())
+    print("Trying to craft...")
+    while true do
+        readInventory()
+        if not craftRecipe(checkRecipe()) then break end
+    end
+end
