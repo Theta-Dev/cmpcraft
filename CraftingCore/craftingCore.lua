@@ -3,12 +3,11 @@ BLOCK_HOME = "minecraft:chest"
 
 POS_HOME = vector.new(0,0,0)
 POS_FUEL = vector.new(1,0,0)
-POS_INJECTORS = {vector.new(0,1,0),vector.new(0,2,0),vector.new(0,3,0),vector.new(0,4,0),
-    vector.new(1,4,0),vector.new(1,3,0),vector.new(1,2,0),vector.new(1,1,0),
-    vector.new(2,1,0),vector.new(2,2,0),vector.new(2,3,0),vector.new(2,4,0),
-    vector.new(3,4,0),vector.new(3,3,0),vector.new(3,2,0),vector.new(3,1,0),
-    vector.new(4,1,0),vector.new(4,2,0),vector.new(4,3,0),vector.new(4,4,0),
-    vector.new(5,4,0),vector.new(5,3,0),vector.new(5,2,0),vector.new(5,1,0)}
+POS_INJECTORS = {vector.new(0,1,0),vector.new(0,2,0),vector.new(0,3,0),vector.new(0,4,0),vector.new(0,5,0),
+    vector.new(1,5,0),vector.new(1,4,0),vector.new(1,3,0),vector.new(1,2,0),vector.new(1,1,0),
+    vector.new(2,1,0),vector.new(2,2,0),vector.new(2,3,0),vector.new(2,4,0),vector.new(2,5,0),
+    vector.new(3,5,0),vector.new(3,4,0),vector.new(3,3,0),vector.new(3,2,0),vector.new(3,1,0),
+    vector.new(4,1,0),vector.new(4,2,0),vector.new(4,3,0),vector.new(4,4,0),vector.new(4,5,0)}
 POS_CORE = vector.new(1,0,0)
 POS_REDSTONE = vector.new(1,0,0)
 
@@ -242,7 +241,7 @@ function craftRecipe(rcp)
     end
 
     function pushItem()
-        while not tryPushItem do
+        while not tryPushItem() do
             sleep(2)
         end
     end
@@ -255,10 +254,10 @@ function craftRecipe(rcp)
     end
 
     function pullItem()
-        turtle.suck()
+        turtle.suck(1)
         while turtle.getItemCount() == 0 do
             sleep(2)
-            turtle.suck()
+            turtle.suck(1)
         end
     end
 
