@@ -232,8 +232,84 @@ function checkRecipe()
     return {id=0, n=0}
 end
 
-function craftRecipe(recipe)
-    
+function craftRecipe(rcp)
+    local recipe = recipes[rcp.id]
+
+    function pushItem()
+        if not peripheral.isPresent("bottom") then return false end
+
+        return turtle.dropDown(1)
+    end
+
+    function discardItem()
+        move(POS_HOME, RT_HOME)
+        if not peripheral.isPresent("bottom") then return false end
+
+        return turtle.dropDown()
+    end
+
+    function pullItem()
+        turtle.suck()
+        while turtle.getItemCount == 0 do
+            sleep(2)
+            turtle.suck()
+        end
+    end
+
+    print("Crafting Recipe" .. rcp.id)
+    turtle.select(1)
+
+    -- Place core item
+    move(POS_CORE)
+    redstone.setOutput("right", true)
+    while true do
+        pullItem()
+        local item = turtle.getItemDetail()
+
+        if item.name == recipe[1].name and item.damage == recipe[1].damage then
+            redstone.setOutput("right", false)
+            move(POS_CORE)
+            pushItem()
+            break
+        else
+            discardItem()
+        end
+    end
+    table.remove(recipe, 1)
+
+    -- Place crafting items
+    local injector = 1
+
+    while table.getn(recipe) > 0 do
+        move(POS_HOME, RT_HOME)
+
+        for i=1, 16, 1 do
+            if table.getn(recipe) == 0 then break end
+            turtle.select(i)
+
+            local itemOK = false
+            while not itemOK do
+                pullItem()
+                local item = turtle.getItemDetail()
+
+                for j=1, table.getn(recipe), 1 do
+                    if item.name = recipe[j].name and item.damage == recipe[j].damage then
+                        itemOK = true
+                        break
+                    end
+                end
+                if not itemOK then discardItem() end
+            end
+        end
+
+        for i=1, 16, 1 do
+            turtle.select(i)
+            if turtle.getItemCount == 0 then break end
+            move(POS_INJECTORS[injector])
+            pushItem()
+        end
+    end
+
 end
 
 readFile()
