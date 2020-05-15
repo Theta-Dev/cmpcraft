@@ -266,7 +266,7 @@ function craftRecipe(recipe)
     local injector = 1
     for i=2, table.getn(recipes[recipe.id]), 1 do
         for j=1, recipes[recipe.id][i].count, 1 do
-            move(POS_INJECTORS[injector], RT_INJECTORS[injector])
+            move(POS_INJECTORS[injector])
             pushItem(recipes[recipe.id][i])
             injector = injector + 1
         end
