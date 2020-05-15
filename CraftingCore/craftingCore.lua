@@ -294,6 +294,7 @@ function craftRecipe(rcp)
             turtle.select(i)
 
             local itemOK = false
+            redstone.setOutput("right", true)
             while not itemOK do
                 pullItem()
                 local item = turtle.getItemDetail()
@@ -306,6 +307,7 @@ function craftRecipe(rcp)
                 end
                 if not itemOK then discardItem() end
             end
+            redstone.setOutput("right", false)
         end
 
         for i=1, 16, 1 do
