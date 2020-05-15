@@ -250,7 +250,7 @@ function craftRecipe(rcp)
 
     function pullItem()
         turtle.suck()
-        while turtle.getItemCount == 0 do
+        while turtle.getItemCount() == 0 do
             sleep(2)
             turtle.suck()
         end
@@ -260,7 +260,7 @@ function craftRecipe(rcp)
     turtle.select(1)
 
     -- Place core item
-    move(POS_CORE)
+    move(POS_HOME)
     redstone.setOutput("right", true)
     while true do
         pullItem()
@@ -293,7 +293,7 @@ function craftRecipe(rcp)
                 local item = turtle.getItemDetail()
 
                 for j=1, table.getn(recipe), 1 do
-                    if item.name = recipe[j].name and item.damage == recipe[j].damage then
+                    if item.name == recipe[j].name and item.damage == recipe[j].damage then
                         itemOK = true
                         break
                     end
@@ -316,4 +316,4 @@ readFile()
 home()
 
 readInventory()
-print(checkRecipe())
+craftRecipe(checkRecipe())
