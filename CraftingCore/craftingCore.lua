@@ -1,5 +1,5 @@
 BLOCK_CHEST = "minecraft:chest"
-BLOCK_HOME = "minecraft:lapis_block"
+BLOCK_HOME = "minecraft:chest"
 
 POS_HOME = vector.new(0,0,0)
 POS_FUEL = vector.new(1,0,0)
@@ -28,7 +28,7 @@ function home()
         local _, block = turtle.inspectDown()
         if block.name == BLOCK_HOME then return
         else
-            for i=1, 10, 1 do
+            while true do
                 if not turtle.forward() then
                     turtle.turnRight()
                     turtle.forward()
@@ -36,7 +36,6 @@ function home()
                 _, block = turtle.inspectDown()
                 if block.name == BLOCK_HOME then return end
             end
-            error("Could not detect home")
         end
     end
 
