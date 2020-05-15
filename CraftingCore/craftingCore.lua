@@ -38,7 +38,7 @@ function home()
     function rotateHome()
         for i=1, 4, 1 do
             local _, block = turtle.inspect()
-            if block.name == BLOCK_CHEST then return
+            if block.name == BLOCK_HOME then return
             else
                 turtle.turnRight()
             end
